@@ -1,16 +1,45 @@
+import useInput from '@hooks/useinput';
+import axios from 'axios';
 import React, { useCallback, useState, VFC } from 'react';
-import { Form, Label, Input, LinkContainer, Button, Header } from './styles';
+import { Form,Error, Label, Input, LinkContainer, Button, Header } from './styles';
 
 const SignUp = () => {
-  const [email] = useState('');
-  const [nickname] = useState('');
-  const [password] = useState('');
-  const [passwordCheck] = useState('');
-  const onChangeEmail = useCallback(() => {}, []);
-  const onChangeNickname = useCallback(() => {}, []);
-  const onChangePassword = useCallback(() => {}, []);
-  const onChangePasswordCheck = useCallback(() => {}, []);
-  const onSubmit = useCallback(() => {}, []);
+  const [email,onChangeEmail] = useInput('');
+  const [nickname,onChangeNickname] = useInput('');
+  const [password, ,setPassword] = useInput('');
+  const [passwordCheck, ,setPasswordCheck] = useInput('');
+  const [missmatchError, setMissmatchError] = useState(false);
+
+  const onChangePassword = useCallback((e) => {
+    setPassword(e.target.value);
+    setMissmatchError(e.target.value!==passwordCheck);
+  }, [passwordCheck]);
+
+  const onChangePasswordCheck = useCallback((e) => {
+    setPasswordCheck(e.target.value);
+    setMissmatchError(e.target.value!==password);
+  }, [password]);
+
+  const onSubmit = useCallback((e) => {
+    e.preventDefault();
+    //deps에 함수 안에 쓰여있는 state들을 써주어야 함.
+    if(!missmatchError){
+      console.log('서버로 회원가입하기');
+      axios.post('http://localhost:3095/api/users',{
+        email,
+        nickname,
+        password,
+      }).then((response)=>{
+        console.log(response)
+      })
+      .catch((error)=>{
+        console.log(error.response);
+      })
+      .finally(()=>{
+        //성공하든 실패하든 실행되는 코드
+      });
+    }
+  }, [email,nickname,password,passwordCheck,missmatchError]);
 
   return (
     <div id="container">
@@ -45,7 +74,7 @@ const SignUp = () => {
               onChange={onChangePasswordCheck}
             />
           </div>
-          {/*{mismatchError && <Error>비밀번호가 일치하지 않습니다.</Error>}*/}
+          {missmatchError && <Error>비밀번호가 일치하지 않습니다.</Error>}
           {/*{!nickname && <Error>닉네임을 입력해주세요.</Error>}*/}
           {/*{signUpError && <Error>이미 가입된 이메일입니다.</Error>}*/}
           {/*{signUpSuccess && <Success>회원가입되었습니다! 로그인해주세요.</Success>}*/}
