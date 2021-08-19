@@ -1,5 +1,10 @@
 {
   "devDependencies": {
     "@types/node": "^16.6.2"
+  },
+  "dependencies": {
+    "@types/gravatar": "^1.8.3",
+    "gravatar": "^1.8.2",
+    "swr": "^0.5.6"
   }
 }
