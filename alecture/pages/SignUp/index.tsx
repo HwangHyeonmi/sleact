@@ -6,7 +6,7 @@ import { Link, Redirect } from 'react-router-dom';
 import useSWR from 'swr';
 import { Form,Error, Label, Input, LinkContainer, Button, Header,Success } from './styles';
 const SignUp = () => {
-  const { data, error, revalidate, mutate } = useSWR('http://localhost:3095/api/users', fetcher,);
+  const { data, error, revalidate, mutate } = useSWR('/api/users', fetcher,);
 
   const [email,onChangeEmail] = useInput('');
   const [nickname,onChangeNickname] = useInput('');
@@ -31,7 +31,7 @@ const SignUp = () => {
     //deps에 함수 안에 쓰여있는 state들을 써주어야 함.
     if(!missmatchError){
       console.log('서버로 회원가입하기');
-      axios.post('http://localhost:3095/api/users',{
+      axios.post('/api/users',{
         email,
         nickname,
         password,
@@ -52,7 +52,7 @@ const SignUp = () => {
     return <div>로딩중..</div>
   }
   if (data) {
-    return <Redirect to="/workspace/channel" />;
+    return <Redirect to="/workspace/sleact/channel/일반" />;
   }
 
   return (
